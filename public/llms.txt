@@ -1,56 +1,47 @@
-# MathScholars — Generative Engine Optimization Map
-
-> Create a shadow proxy website
+# Business — Generative Engine Optimization Map
 
 ---
 
 ## Pages
 
 ### Home
-https://mathscholars-e13df3cb.zappy5.app
+https://example.com
 Discover engaging math games kids actually enjoy playing! MathScholars offers free interactive games that make learning math fun and effortless. Start playing today!
 
 ### About & Ethics
-https://mathscholars-e13df3cb.zappy5.app/about
+https://example.com/about
 Learn how MathScholars transforms math education through ethical, research-backed game design. We&#39;re committed to building confident young mathematicians worldwide.
 
 ### How It Works
-https://mathscholars-e13df3cb.zappy5.app/how-it-works
+https://example.com/how-it-works
 See how our free math games adapt to your child&#39;s skill level, track progress, and build confidence. Simple setup gets kids learning math in minutes!
 
 ### Contact
-https://mathscholars-e13df3cb.zappy5.app/contact
+https://example.com/contact
 Questions about our math games for kids? Need technical help or want to share your success story? Our team is here to help you every step of the way.
 
 ## Legal & Policy
 
 ### Privacy Policy
-https://mathscholars-e13df3cb.zappy5.app/privacy
+https://example.com/privacy
 Information about how user data is collected, stored, and protected.
 
 ### Terms & Conditions
-https://mathscholars-e13df3cb.zappy5.app/terms
+https://example.com/terms
 Legal terms describing service usage, rights, and policies.
 
 ### Accessibility Statement
-https://mathscholars-e13df3cb.zappy5.app/accessibility
+https://example.com/accessibility
 Information about WCAG compliance and accessibility features.
 
 ---
 
 # Business Context (for LLM understanding)
 
-## About MathScholars
-Create a shadow proxy website
-
-## Target Audience
-
-## Industry
-technology
-
+## About Business
 ---
 
 # Additional Resources
 
-- **Sitemap**: https://mathscholars-e13df3cb.zappy5.app/sitemap.xml
-- **Robots.txt**: https://mathscholars-e13df3cb.zappy5.app/robots.txt
+- **Sitemap**: https://example.com/sitemap.xml
+- **Robots.txt**: https://example.com/robots.txt
