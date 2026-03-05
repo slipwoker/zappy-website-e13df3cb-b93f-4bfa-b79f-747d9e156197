@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mathscholars-e13df3cb.zappy5.app/sitemap.xml

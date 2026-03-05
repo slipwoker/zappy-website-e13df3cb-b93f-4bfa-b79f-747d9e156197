@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Play Free Math Games Kids Love — MathScholars</title>
+    <meta name="description" content="Discover engaging math games kids actually enjoy playing! MathScholars offers free interactive games that make learning math fun and effortless. Start playing today!">
+    <meta name="keywords" content="Math games kids, Math games free, MathScholars, interactive math games, educational games">
+    
+    <!-- Zappy Analytics -->
+<script>
+(function() {
+  'use strict';
+  
+  // Configuration
+  var config = {
+    websiteId: 'e13df3cb-b93f-4bfa-b79f-747d9e156197',
+    apiUrl: 'https://api.zappy5.com/api/analytics/track',
+    sessionDuration: 30 * 60 * 1000, // 30 minutes
+    visitorDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    trackPageViews: true,
+    trackClicks: true,
+    trackFormSubmissions: true
+  };
+  
+  // Generate or retrieve persistent visitor ID (30 days)
+  function getVisitorId() {
+    var visitorKey = 'zappy_visitor_' + config.websiteId;
+    var visitor = null;
+    
+    try {
+      visitor = localStorage.getItem(visitorKey);
+      if (visitor) {
+        var visitorData = JSON.parse(visitor);
+        var now = Date.now();
+        
+        // Check if visitor ID is still valid (30 days)
+        if (now - visitorData.created < config.visitorDuration) {
+          // Update last seen timestamp
+          visitorData.lastSeen = now;
+          localStorage.setItem(visitorKey, JSON.stringify(visitorData));
+          return visitorData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: LocalStorage not available');
+    }
+    
+    // Generate new visitor ID
+    var newVisitorId = 'zv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      localStorage.setItem(visitorKey, JSON.stringify({
+        id: newVisitorId,
+        created: Date.now(),
+        lastSeen: Date.now()
+      }));
+    } catch (e) {
+      // Continue without local storage
+    }
+    
+    return newVisitorId;
+  }
+  
+  // Generate or retrieve session ID (30 minutes)
+  function getSessionId() {
+    var sessionKey = 'zappy_session_' + config.websiteId;
+    var session = null;
+    
+    try {
+      session = sessionStorage.getItem(sessionKey);
+      if (session) {
+        var sessionData = JSON.parse(session);
+        var now = Date.now();
+        
+        // Check if session is still valid
+        if (now - sessionData.timestamp < config.sessionDuration) {
+          // Update timestamp
+          sessionData.timestamp = now;
+          sessionStorage.setItem(sessionKey, JSON.stringify(sessionData));
+          return sessionData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: SessionStorage not available');
+    }
+    
+    // Generate new session ID
+    var newSessionId = 'zs_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({
+        id: newSessionId,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Continue without session storage
+    }
+    
+    return newSessionId;
+  }
+  
+  var visitorId = getVisitorId();
+  var sessionId = getSessionId();
+  
+  // Track an event
+  function trackEvent(eventType, data) {
+    data = data || {};
+    
+    var eventData = {
+      website_id: config.websiteId,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      referrer: document.referrer || 'direct',
+      visitor_id: visitorId,
+      session_id: sessionId,
+      metadata: data
+    };
+    
+    // Use sendBeacon if available (better for page unload events)
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
+      navigator.sendBeacon(config.apiUrl, blob);
+    } else {
+      // Fallback to fetch
+      fetch(config.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData),
+        keepalive: true
+      }).catch(function(error) {
+        console.warn('Zappy Analytics: Failed to track event', error);
+      });
+    }
+  }
+  
+  // Track page view
+  if (config.trackPageViews) {
+    trackEvent('pageview', {
+      title: document.title,
+      url: window.location.href
+    });
+  }
+  
+  // Track clicks on important elements
+  if (config.trackClicks) {
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Track button clicks (counted as actions)
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        var button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        trackEvent('click', {
+          element: 'button',
+          text: button.textContent.trim().substring(0, 100),
+          id: button.id || null,
+          class: button.className || null
+        });
+      }
+      
+      // Track link clicks (navigation - not counted as actions)
+      else if (target.tagName === 'A' || target.closest('a')) {
+        var link = target.tagName === 'A' ? target : target.closest('a');
+        trackEvent('navigation', {
+          element: 'link',
+          text: link.textContent.trim().substring(0, 100),
+          href: link.href,
+          external: link.hostname !== window.location.hostname
+        });
+      }
+    }, true);
+  }
+  
+  // Track form submissions
+  if (config.trackFormSubmissions) {
+    document.addEventListener('submit', function(e) {
+      var form = e.target;
+      
+      trackEvent('form_submit', {
+        form_id: form.id || null,
+        form_name: form.name || null,
+        form_action: form.action || null,
+        form_method: form.method || 'GET'
+      });
+    }, true);
+  }
+  
+  // Track time on page (send on page unload)
+  var pageLoadTime = Date.now();
+  
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+    
+    trackEvent('page_unload', {
+      time_on_page: timeOnPage,
+      page_path: window.location.pathname
+    });
+  });
+  
+  // Expose tracking function globally for custom events
+  window.zappyAnalytics = {
+    track: trackEvent,
+    getVisitorId: function() { return visitorId; },
+    getSessionId: function() { return sessionId; }
+  };
+  
+})();
+</script>
+<!-- End Zappy Analytics -->
+    <meta property="og:title" content="Play Free Math Games Kids Love — MathScholars">
+  <meta property="og:description" content="Discover engaging math games kids actually enjoy playing! MathScholars offers free interactive games that make learning math fun and effortless. Start playing today!">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Play Free Math Games Kids Love — MathScholars">
+  <meta name="twitter:description" content="Discover engaging math games kids actually enjoy playing! MathScholars offers free interactive games that make learning math fun and effortless. Start playing today!">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    <!-- Mickidum Accessibility Toolbar -->
+    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style id="zappy-dropdown-submenu-styles">
+      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
+      /* Base styles for dropdown submenus - parent must be positioned */
+      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
+      /* Submenu base - hidden by default */
+      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
+      /* CRITICAL: Desktop hover styles to show dropdown */
+      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Submenu item styling */
+      .sub-menu li { list-style: none; margin: 0; padding: 0; }
+      .sub-menu a { display: block !important; padding: 10px 16px !important; color: #333 !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
+      .sub-menu a:hover { background-color: #f5f5f5; }
+      /* RTL (Hebrew/Arabic) dropdown positioning */
+      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
+      /* Hide empty dropdown menus */
+      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))), .sub-menu:not(:has(li)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      /* Desktop: show submenu on Menu Group hover */
+      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Menu Group title styling */
+      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
+      
+      /* ========== MOBILE SUBMENU STYLES ========== */
+      @media (max-width: 768px) {
+        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
+        .sub-menu.mobile-expanded { max-height: 500px !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
+        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
+        /* Disable hover behavior on mobile */
+        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
+        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
+        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
+        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
+        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
+        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
+        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: auto !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-light) !important; position: static !important; flex-shrink: 0 !important; align-self: stretch !important; z-index: 2 !important; padding: 0 !important; margin: 0 !important; }
+        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
+        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
+        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-light) !important; }
+        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-light) !important; }
+      }
+      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
+    </style>
+
+    <style id="zappy-widget-visibility">
+      #mic-access-tool-general-button, .mic-access-tool-general-button,
+      #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+      ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
+      #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
+        display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+      }
+    </style>
+</head>
+<body>
+
+  <nav class="navbar">
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+    <svg class="hamburger-icon" width="24" height="24" viewbox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <svg class="close-icon" width="24" height="24" viewbox="0 0 24 24" fill="none" style="display:none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+  
+  <button class="phone-header-btn" aria-label="Call">
+    <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    </svg>
+  </button>
+  
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="/" class="logo-link">
+        <img src="/assets/business-logo.webp" alt="MathScholars" class="logo">
+      </a>
+    </div>
+    
+    <ul class="nav-menu" id="navMenu"><li><a href="/about">About &amp; Ethics</a></li><li><a href="/how-it-works">How It Works</a></li></ul>
+    
+    <div class="nav-cta-container">
+      <a href="/contact" class="nav-cta-btn">Contact</a>
+    </div>
+  </div>
+</nav>
+  
+  <main>
+    <section class="home-hero-section" data-layout-spec="Home-hero" data-hero-type="fullscreen-scrim">
+  <img data-hero-bg="true" data-placeholder="home-hero-bg" data-context="Warm classroom desk scene with cream paper texture, faint pencil-drawn math symbols (equations, geometric shapes), and an abstract bridge or pathway illustration suggesting network routing and connectivity, soft natural lighting, academic and scholarly atmosphere, warm terracotta and cream color palette" data-preserve-bg="0" width="1920" height="1080" src="/assets/site-home-hero-bg.webp" alt="Academic workspace with math symbols and routing pathways" class="hero-bg">
+  
+  <div class="hero-scrim" aria-hidden="true"></div>
+  
+  <div class="hero-overlay-wrapper">
+    <div class="hero-content-card">
+      <h1>A calm, academic shadow proxy for research and learning.</h1>
+      <h3>Route study tools and lab traffic with clarity, consent, and control.</h3>
+      <p>Built for responsible researchers and educators who need privacy-aware routing. Simple onboarding, transparent operation, and full control over your academic network traffic.</p>
+      <div class="hero-cta-group">
+        <a href="/contact" class="btn-primary">Request guidance</a>
+        <a href="/contact" class="btn-secondary">Talk to a specialist</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="home-hero-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 100" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,100 L0,55 Q150,48 300,52 Q450,56 600,50 Q750,44 900,48 Q1050,52 1200,45 L1200,100 Z" fill="#F6F0E7"></path>
+      <g stroke="#D1672E" stroke-width="1.5" fill="none" opacity="0.4">
+        <line x1="880" y1="48" x2="890" y2="48"></line>
+        <line x1="885" y1="43" x2="885" y2="53"></line>
+        <line x1="920" y1="46" x2="930" y2="46"></line>
+        <line x1="925" y1="41" x2="925" y2="51"></line>
+        <line x1="960" y1="50" x2="970" y2="50"></line>
+        <line x1="965" y1="45" x2="965" y2="55"></line>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="home-benefits-section" data-layout-spec="Home-benefits">
+  <div class="home-benefits-container">
+    <div class="home-benefits-content">
+      <div class="home-benefits-text-column">
+        <h2>Designed to feel safe, not shady.</h2>
+        <p class="home-benefits-intro">Making routing understandable for educators, learners, and IT teams—because transparency builds trust in every classroom.</p>
+        
+        <div class="home-benefits-pills">
+          <div class="home-benefits-pill">
+            <h3>Clear intent</h3>
+            <p>Every routing decision is logged and explained in plain language, so administrators know exactly what's happening and why.</p>
+          </div>
+          
+          <div class="home-benefits-pill">
+            <h3>Quiet reliability</h3>
+            <p>Stable routing and predictable behavior mean fewer surprises—just consistent, dependable performance that stays out of your way.</p>
+          </div>
+          
+          <div class="home-benefits-pill">
+            <h3>Privacy-aware by default</h3>
+            <p>Minimizing exposure and emphasizing consent at every step, so student data stays protected and parents stay confident.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="home-benefits-image-column">
+        <div class="home-benefits-image-wrapper">
+          <img data-placeholder="home-benefits-image-1" data-context="A calm, warm illustration of a gentle pathway or bridge with subtle mathematical symbols (equations, geometric shapes) floating around it. The style should be soft, friendly, and non-technical—like a hand-drawn educational diagram. Use warm cream and terracotta tones with dusty blue accents. The image should feel reassuring and academic, not corporate or intimidating." width="600" height="500" src="/assets/site-home-benefits-image-1.webp" alt="Illustration of a safe pathway with mathematical elements representing transparent routing">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="home-benefits-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,60 L0,30 Q60,28 120,32 T240,28 Q300,30 360,26 T480,30 Q540,28 600,32 T720,26 Q780,30 840,28 T960,32 Q1020,26 1080,30 T1200,28 L1200,60 Z" fill="#F6F0E7" stroke="var(--border-light)" stroke-width="1.5" stroke-dasharray="8,6"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="home-steps-section" data-layout-spec="Home-steps">
+  <div class="home-steps-container">
+    <div class="home-steps-content">
+      <h2 class="home-steps-title">A gentle setup, in four steps.</h2>
+      
+      <div class="home-steps-list">
+        <div class="home-steps-card home-steps-card-wide">
+          <div class="home-steps-badge">1</div>
+          <div class="home-steps-text">
+            <h3 class="home-steps-card-title">Define the learning purpose</h3>
+            <p>Start by clearly specifying appropriate use cases for your math learning environment. Identify which topics, grade levels, and learning objectives align with your educational goals. This ensures the platform serves your students' needs while maintaining focus on meaningful mathematical exploration.</p>
+          </div>
+          <svg class="home-steps-corner-mark" data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,0 L0,12 M0,0 L12,0" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"></path>
+          </svg>
+        </div>
+
+        <div class="home-steps-card home-steps-card-narrow">
+          <div class="home-steps-badge">2</div>
+          <div class="home-steps-text">
+            <h3 class="home-steps-card-title">Choose routing boundaries</h3>
+            <p>Establish clear scoping and least-privilege access controls. Define which resources are available, set appropriate permissions, and ensure students interact only with vetted, age-appropriate content. This creates a safe, controlled environment for mathematical discovery.</p>
+          </div>
+          <svg class="home-steps-corner-mark" data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16,0 L4,0 M16,0 L16,12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"></path>
+          </svg>
+        </div>
+
+        <div class="home-steps-card home-steps-card-wide">
+          <div class="home-steps-badge">3</div>
+          <div class="home-steps-text">
+            <h3 class="home-steps-card-title">Connect your environment</h3>
+            <p>Follow our simple integration guidance to link MathScholars with your existing systems. We provide clear, step-by-step instructions that respect your technical setup. No complex coding required—just straightforward configuration that gets you up and running quickly.</p>
+          </div>
+          <svg class="home-steps-corner-mark" data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,16 L0,4 M0,16 L12,16" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"></path>
+          </svg>
+        </div>
+
+        <div class="home-steps-card home-steps-card-narrow">
+          <div class="home-steps-badge">4</div>
+          <div class="home-steps-text">
+            <h3 class="home-steps-card-title">Review and maintain</h3>
+            <p>Conduct periodic checks to ensure everything runs smoothly. Monitor usage patterns, review access logs, and maintain responsible operations. Regular reviews help you optimize the learning experience and keep your environment secure and effective.</p>
+          </div>
+          <svg class="home-steps-corner-mark" data-no-icon-edit="true" aria-hidden="true" width="16" height="16" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16,16 L4,16 M16,16 L16,4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"></path>
+          </svg>
+        </div>
+      </div>
+
+      <p class="home-steps-closing">Our dedicated support team is available to guide you through every step—reach out anytime via our contact page.</p>
+    </div>
+
+    <div class="home-steps-rail" aria-hidden="true">
+      <svg data-no-icon-edit="true" viewbox="0 0 2 400" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="1" y1="0" x2="1" y2="400" stroke="currentColor" stroke-width="1" opacity="0.25"></line>
+        <circle cx="1" cy="50" r="4" fill="var(--primary)" opacity="0.6"></circle>
+        <circle cx="1" cy="150" r="4" fill="var(--primary)" opacity="0.6"></circle>
+        <circle cx="1" cy="250" r="4" fill="var(--primary)" opacity="0.6"></circle>
+        <circle cx="1" cy="350" r="4" fill="var(--primary)" opacity="0.6"></circle>
+      </svg>
+    </div>
+  </div>
+
+  <div class="home-steps-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 80" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L0,25 Q50,30 100,22 T200,28 Q250,20 300,26 T400,24 Q450,29 500,21 T600,27 Q650,23 700,29 T800,25 Q850,28 900,22 T1000,26 Q1050,24 1100,28 T1200,20 L1200,80 Z" fill="var(--bg-light)"></path>
+      <path d="M0,25 Q50,30 100,22 T200,28 Q250,20 300,26 T400,24 Q450,29 500,21 T600,27 Q650,23 700,29 T800,25 Q850,28 900,22 T1000,26 Q1050,24 1100,28 T1200,20" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg-light)" opacity="0.4"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="home-testimonials-section" data-layout-spec="Home-testimonials">
+  <div class="testimonials-container">
+    <div class="testimonials-header">
+      <h2>Trusted when clarity matters.</h2>
+      <p>Educators and administrators value tools that feel transparent, predictable, and ethically grounded. Here's what they say about MathScholars.</p>
+    </div>
+    
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <svg class="math-doodle" data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="16" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"></circle>
+          <path d="M12 20 L20 12 L28 20 L20 28 Z" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"></path>
+          <circle cx="20" cy="20" r="3" fill="currentColor" opacity="0.25"></circle>
+        </svg>
+        <p class="quote">"The onboarding process was incredibly calm and straightforward. No hidden surprises, just clear explanations of what the tool does and how it protects student privacy."</p>
+        <h3>Lab Coordinator</h3>
+        <p class="context">University Research Department</p>
+      </div>
+      
+      <div class="testimonial-card">
+        <svg class="math-doodle" data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="24" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"></rect>
+          <line x1="14" y1="20" x2="26" y2="20" stroke="currentColor" stroke-width="1.5" opacity="0.4"></line>
+          <line x1="20" y1="14" x2="20" y2="26" stroke="currentColor" stroke-width="1.5" opacity="0.4"></line>
+        </svg>
+        <p class="quote">"I appreciate the ethical framing around every feature. It's refreshing to use software that acknowledges its role in the classroom without overpromising or obscuring how it works."</p>
+        <h3>Instructor</h3>
+        <p class="context">Secondary Education Mathematics</p>
+      </div>
+      
+      <div class="testimonial-card">
+        <svg class="math-doodle" data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="20,8 32,32 8,32" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"></polygon>
+          <circle cx="20" cy="24" r="2" fill="currentColor" opacity="0.25"></circle>
+          <line x1="20" y1="15" x2="20" y2="20" stroke="currentColor" stroke-width="1.5" opacity="0.4"></line>
+        </svg>
+        <p class="quote">"Predictable behavior is essential when managing district-wide tools. MathScholars delivers exactly what it promises—no unexpected data collection, no confusing settings, just reliable functionality."</p>
+        <h3>IT Administrator</h3>
+        <p class="context">K-12 School District Technology</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="testimonials-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="testimonials-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="var(--bg-light)" stop-opacity="1"></stop>
+          <stop offset="100%" stop-color="var(--bg-dark)" stop-opacity="1"></stop>
+        </linearGradient>
+      </defs>
+      <path d="M0,60 L0,35 Q100,32 200,38 T400,34 Q500,38 600,32 T800,36 Q900,34 1000,38 T1200,35 L1200,60 Z" fill="#1B1916"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="home-cta-section" data-layout-spec="Home-cta">
+  <div class="home-cta-container">
+    <div class="home-cta-backplate">
+      <h2>Bring calm routing to your math lab.</h2>
+      <p>Whether you're an educator, researcher, or IT professional, we'd love to discuss how MathScholars can support responsible, secure deployment in your environment.</p>
+      <a href="/contact" class="btn-primary">Contact MathScholars</a>
+    </div>
+  </div>
+  
+  <svg class="home-cta-pattern" data-no-icon-edit="true" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1200 400" preserveaspectratio="none">
+    <g opacity="0.04" stroke="currentColor" fill="none" stroke-width="1.5">
+      <path d="M50,80 Q70,60 90,80 T130,80"></path>
+      <circle cx="200" cy="100" r="15"></circle>
+      <path d="M250,70 L280,100 L250,130 L220,100 Z"></path>
+      <text x="350" y="110" font-family="'Nunito Sans', sans-serif" font-size="24" opacity="0.6">∑</text>
+      <path d="M450,90 Q470,70 490,90"></path>
+      <circle cx="580" cy="85" r="12"></circle>
+      <path d="M650,75 L680,105 M680,75 L650,105"></path>
+      <text x="750" y="105" font-family="'Nunito Sans', sans-serif" font-size="20" opacity="0.5">π</text>
+      <path d="M850,95 Q870,75 890,95 T930,95"></path>
+      <circle cx="1000" cy="90" r="18"></circle>
+      <path d="M1080,80 L1110,110 L1080,140 L1050,110 Z"></path>
+      
+      <path d="M100,220 Q120,200 140,220"></path>
+      <circle cx="250" cy="230" r="14"></circle>
+      <text x="350" y="240" font-family="'Nunito Sans', sans-serif" font-size="22" opacity="0.55">√</text>
+      <path d="M480,210 L510,240 M510,210 L480,240"></path>
+      <circle cx="650" cy="225" r="16"></circle>
+      <path d="M750,215 Q770,195 790,215 T830,215"></path>
+      <text x="920" y="235" font-family="'Nunito Sans', sans-serif" font-size="24" opacity="0.6">∞</text>
+      <path d="M1050,220 L1080,250 L1050,280 L1020,250 Z"></path>
+      
+      <circle cx="150" cy="340" r="13"></circle>
+      <path d="M250,330 Q270,310 290,330 T330,330"></path>
+      <text x="420" y="350" font-family="'Nunito Sans', sans-serif" font-size="20" opacity="0.5">∫</text>
+      <path d="M550,335 L580,365 M580,335 L550,365"></path>
+      <circle cx="700" cy="345" r="17"></circle>
+      <path d="M800,330 L830,360 L800,390 L770,360 Z"></path>
+      <text x="920" y="360" font-family="'Nunito Sans', sans-serif" font-size="22" opacity="0.55">θ</text>
+      <circle cx="1080" cy="350" r="15"></circle>
+    </g>
+  </svg>
+</section>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-top">
+      <div class="footer-column footer-about">
+        <img src="/assets/business-logo.webp" alt="MathScholars" class="logo">
+        <p class="footer-description">Empowering students with innovative technology solutions for mathematical excellence.</p>
+      </div>
+      
+      <div class="footer-column footer-links">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-nav">
+          <li><a href="/about">About &amp; Ethics</a></li>
+          <li><a href="/how-it-works">How It Works</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column footer-contact">
+        <h3 class="footer-heading">Contact Us</h3>
+        <ul class="contact-list">
+          <li><i class="fas fa-envelope"></i> <a href="mailto:[business_email]">[business_email]</a></li>
+          <li><i class="fas fa-phone"></i> <a href="tel:[business_phone]">[business_phone]</a></li>
+          <li><a href="/"><i class="fas fa-map-marker-alt"></i> <span>[business_address]</span></a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column footer-social">
+        <h3 class="footer-heading">Connect With Us</h3>
+        <div class="social-links">
+          <a href="[facebook_handle]" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="[instagram_handle]" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="[whatsapp_handle]" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <p class="copyright">© 2026 MathScholars. All rights reserved.</p>
+      </div>
+      <div class="footer-bottom-right">
+        <ul class="legal-links">
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a></li>
+          <li><a href="/accessibility">Accessibility</a></li>
+        </ul>
+        <a href="https://zappy5.com" target="_blank" class="zappy-attribution">Generated by Zappy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+  
+  <a href="https://wa.me/[whatsapp_handle]" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  
+  <div data-integration="accessibility:toolbar"></div>
+
+    <script src="/script.js"></script>
+
+    <script id="zappy-mobile-submenu-script">
+    (function() {
+      function initMobileSubmenuToggles() {
+        if (window.innerWidth > 768) {
+          document.querySelectorAll('.mobile-submenu-toggle').forEach(function(btn) { btn.remove(); });
+          document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) { menu.classList.remove('mobile-expanded'); });
+          return;
+        }
+        var items = document.querySelectorAll('.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)');
+        items.forEach(function(li) {
+          if (li.querySelector('.mobile-submenu-toggle')) return;
+          var submenu = li.querySelector('.sub-menu');
+          var parentLink = li.querySelector(':scope > a');
+          if (!submenu || !parentLink) return;
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'mobile-submenu-toggle';
+          toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+          toggleBtn.setAttribute('type', 'button');
+          parentLink.insertAdjacentElement('afterend', toggleBtn);
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+              if (menu !== submenu) { menu.classList.remove('mobile-expanded'); var t = menu.parentElement.querySelector('.mobile-submenu-toggle'); if(t) t.classList.remove('expanded'); }
+            });
+            submenu.classList.toggle('mobile-expanded');
+            toggleBtn.classList.toggle('expanded');
+          });
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileSubmenuToggles); }
+      else { initMobileSubmenuToggles(); }
+      var resizeTimer; window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(initMobileSubmenuToggles, 250); });
+      // Re-initialize when mobile menu becomes visible (MutationObserver)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes') {
+            var target = mutation.target;
+            if (target.classList && (target.classList.contains('active') || target.classList.contains('open'))) {
+              setTimeout(initMobileSubmenuToggles, 100);
+            }
+          }
+        });
+      });
+      setTimeout(function() {
+        document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu, nav').forEach(function(menu) {
+          observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+        });
+      }, 500);
+    })();
+    </script>
+
+    <script id="zappy-navbar-scroll-effect">
+    (function(){var nb=document.querySelector('nav.navbar,.navbar:not(.zappy-catalog-menu)');var cm=document.querySelector('.zappy-catalog-menu');if(!nb)return;var fb='rgba(27,25,22,0.85)';var th=60;nb.style.transition='background 0.3s ease,backdrop-filter 0.3s ease,-webkit-backdrop-filter 0.3s ease,box-shadow 0.3s ease';if(cm)cm.style.transition='background 0.3s ease,backdrop-filter 0.3s ease,-webkit-backdrop-filter 0.3s ease';function onS(){var y=window.scrollY||window.pageYOffset;if(y>th){nb.style.background=fb;nb.style.backdropFilter='blur(12px)';nb.style.webkitBackdropFilter='blur(12px)';nb.style.boxShadow='0 2px 16px rgba(0,0,0,0.12)';if(cm){cm.style.background=fb;cm.style.backdropFilter='blur(12px)';cm.style.webkitBackdropFilter='blur(12px)';}}else{nb.style.background='transparent';nb.style.backdropFilter='none';nb.style.webkitBackdropFilter='none';nb.style.boxShadow='none';if(cm){cm.style.background='transparent';cm.style.backdropFilter='none';cm.style.webkitBackdropFilter='none';}}}window.addEventListener('scroll',onS,{passive:true});onS();})();
+    </script>
+</body>
+</html>
